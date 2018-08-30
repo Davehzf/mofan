@@ -10,6 +10,16 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.util.HashMap;
+
+import com.aliyuncs.DefaultAcsClient;
+import com.aliyuncs.IAcsClient;
+import com.aliyuncs.dysmsapi.model.v20170525.SendSmsRequest;
+import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
+import com.aliyuncs.exceptions.ClientException;
+import com.aliyuncs.http.MethodType;
+import com.aliyuncs.profile.DefaultProfile;
+import com.aliyuncs.profile.IClientProfile;
 
 /**
  * 功能:		web.cr6868.com HTTP接口 发送短信
@@ -19,7 +29,50 @@ import java.net.URLEncoder;
  * @date 2017年11月18日 下午13:13:23
  */
 public class SmsUtil {
+	
+	static String product = "Dysmsapi";
+	static String domain = "dysmsapi.aliyuncs.com";
+	static String accessKeyId = "LTAI7dPVbcu3tgWb";
+	static String accessKeySecret = "weugflsFzQmdVzxAaosZqd45hn9ocO";
+public static SendSmsResponse sendSms(String phone,String codeId1) throws ClientException{
+		
+		
+		// TODO Auto-generated method stub
+		System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
+		System.setProperty("sun.net.client.defaultReadTimeout", "10000");
+		System.out.println("send");
+		
+		IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou", accessKeyId, accessKeySecret);
+		DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou", product, domain);
+		IAcsClient acsClient = new DefaultAcsClient(profile);
+		//生成4位随机数字
+/*		String str = "123456789";
+		StringBuilder sb = new StringBuilder(4);
+		for (int i = 0; i < 4; i++) {
+			char ch = str.charAt(new Random().nextInt(str.length()));
+			sb.append(ch);
+		}
+*/		
+		String codeId = "{\"code\":\"" + codeId1 + "\"}";
 
+		SendSmsRequest request = new SendSmsRequest();
+		HashMap<String,String> hashMap = new HashMap<String, String>();
+		hashMap.put("codeId", codeId);
+		System.out.println(hashMap.get("codeId"));
+		System.out.println("hashmap");
+		request.setMethod(MethodType.POST);
+		request.setPhoneNumbers(phone);
+		request.setSignName("漠帆");
+		request.setTemplateCode("SMS_142949812");
+		request.setTemplateParam(hashMap.get("codeId"));
+
+		
+
+		SendSmsResponse sendSmsResponse = acsClient.getAcsResponse(request);
+
+		return sendSmsResponse;
+	}
+	
     /**
      * 创锐平台发送短信
      *
