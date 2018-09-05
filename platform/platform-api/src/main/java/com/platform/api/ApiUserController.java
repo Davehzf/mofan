@@ -122,6 +122,7 @@ public class ApiUserController extends ApiBaseAction {
 	 * 绑定手机
 	 */
 	@ApiOperation(value = "绑定手机")
+	
 	@PostMapping("bindMobile")
 	public Object bindMobile(@LoginUser UserVo loginUser) {
 		JSONObject jsonParams = getJsonRequest();
@@ -138,4 +139,14 @@ public class ApiUserController extends ApiBaseAction {
 		userService.update(userVo);
 		return toResponsSuccess("手机绑定成功");
 	}
+	
+	@ApiOperation(value = "查询用户信息根据openid")
+	@IgnoreAuth
+	@PostMapping("queryByopenId")
+	public Object queryByopenId(String weixin_openid) {
+		UserVo userVo = userService.queryByOpenId(weixin_openid);
+		return userVo;
+	}
+	
+	
 }
